@@ -1,3 +1,2 @@
 # Foogle
-
-A Google search clone. 
+A Google search clone 
