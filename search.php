@@ -55,7 +55,7 @@
                         <a href='<?php echo "search.php?term=$term&type=sites"; ?>'>Sites</a>
                     </li>
                     <li class="<?php echo $type == 'images' ? 'active' : '' ?>">
-                        <a href='<?php echo "search.php?term=$term&type=images"; ?>'>Sites</a>
+                        <a href='<?php echo "search.php?term=$term&type=images"; ?>'>Images</a>
                     </li>
                 </ul>
             </div>
