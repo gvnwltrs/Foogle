@@ -17,6 +17,8 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 <head>
     <title>Welcome to Foogle</title>
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -36,6 +38,7 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 
                     <form action="search.php" method="GET">
                         <div class="searchBarContainer"> 
+                            <input type="hidden" name="type" value="<?php echo $type;?>">
                             <input class="searchBox" type="text" name="term" value="<?php echo $term;?>">
                             <button class="searchButton">
                                 <img src="assets/images/icons/search.png">
@@ -89,8 +92,10 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 
                 <?php 
         
-                $pagesToShow = 10; 
-                $numPages = ceil($numResults / $pageLimit); 
+                // concept: just "sliding" the current page back to a lower bound to start iterating from within the pages to show range
+                // if it's less than say 10, the starting point will always be 1 to the end point 
+                $pagesToShow = 10;
+                $numPages = ceil($numResults / $pageLimit);  
                 $pagesLeft = min($pagesToShow, $numPages); 
 
                 $currentPage = $page - floor($pagesToShow / 2); 
@@ -119,6 +124,12 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
                             </div>"; 
                     }
 
+                    if($numPages == 1) {
+                        echo "<div class='pageNumberContainer'>
+                                    <img src='assets/images/page.png'>
+                            </div>"; 
+                    }
+
                     $currentPage++;
                     $pagesLeft--; 
                 }
@@ -135,6 +146,6 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
         </div>
 
     </div>
-
+    <script type="text/javascript" src="assets/js/script.js"></script>
 </body>
 </html>
