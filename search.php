@@ -1,4 +1,5 @@
 <?php
+include("config.php"); 
 
     if(isset($_GET["term"]) && $_GET["term"] != null) {
         $term = $_GET["term"];

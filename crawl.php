@@ -1,5 +1,7 @@
 <?php 
-require_once("classes/DomDocumentParser.php"); 
+include("config.php"); 
+include("classes/DomDocumentParser.php"); 
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,9 +9,35 @@ error_reporting(E_ALL);
 $alreadyCrawled = array(); 
 $crawling = array();
 
+function linkExists($url) {
+    global $connection; 
+
+    $query = $connection->prepare("SELECT * FROM sites WHERE url=:url"); 
+
+    $query->bindParam(":url", $url); 
+    
+    $query->execute(); 
+
+    return $query->rowCount() != 0;
+}
+
+function insertLink($url, $title, $description, $keywords) {
+    global $connection; 
+
+    $query = $connection->prepare("INSERT INTO sites(url, title, description, keywords) 
+                                    VALUES(:url, :title, :description, :keywords)"); 
+
+    $query->bindParam(":url", $url); 
+    $query->bindParam(":title", $title); 
+    $query->bindParam(":description", $description); 
+    $query->bindParam(":keywords", $keywords); 
+
+    return $query->execute(); 
+}
+
 function createLink($src, $url) {
     $scheme = parse_url($url)["scheme"]; // http
-    $host = parse_url($url)["host"]; // www.gavinwalters.com 
+    $host = parse_url($url)["host"]; // e.g. www.gavinwalters.com 
     // src example: /about.php 
 
     if(substr($src, 0, 2) == "//") {
@@ -67,7 +95,16 @@ function getDetails($url) {
     $keywords = str_replace("\n", "", $keywords); 
 
 
-    echo "URL: $url, Title: $title, Description: $description, Keywords: $keywords<br>";
+    // echo "URL: $url, Title: $title, Description: $description, Keywords: $keywords<br>";
+    if(linkExists($url)) {
+        echo "$url already exists<br>";
+    }
+    else if(insertLink($url, $title, $description, $keywords)) {
+        echo "SUCCESS: $url<br>"; 
+    }
+    else {
+        echo "ERROR: Failed to insert $url<br>"; 
+    }
 }
 
 function followLinks($url) {
